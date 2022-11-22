@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
 
-Console.WriteLine("Hello, World!");
-
-//args = new string[] { "2021/24" };
+args = new string[] { "2021/24-46" };
 var tsolvers = Assembly.GetEntryAssembly()!.GetTypes()
     .Where(t => t.GetTypeInfo().IsClass)  //&& typeof(Solver).IsAssignableFrom(t)
     .OrderBy(t => t.FullName)
@@ -15,19 +13,28 @@ var tsolvers = Assembly.GetEntryAssembly()!.GetTypes()
 tsolvers.ToList().ForEach(i => Console.Write("{0}\t", i));
 Console.WriteLine();
 
-var action = Command(args, Args("([0-9]+)/([0-9]+)"), m =>
+var action = Command(args, Args("([0-9]+)/([0-9]+)"), m =>                      //Capture : [Year]/[Day]
 {
     var year = int.Parse(m[0]);
     var day = int.Parse(m[1]);
     Console.WriteLine($"Year : {year} | Day : {day}");
-    return () => Console.WriteLine("END");
+    return () => Console.WriteLine("Solver : Year/Day.");
 
 }) ??
-Command(args, Args("([0-9]+)"), m =>
+Command(args, Args("([0-9]+)"), m =>                                            //Capture : [Year]
 {
     var year = int.Parse(m[0]);
     Console.WriteLine($"Year : {year} ");
-    return () => Console.WriteLine("END");
+    return () => Console.WriteLine("Solver : Year");
+
+}) ??
+Command(args, Args("([0-9]+)/([0-9]+)-([0-9]+)"), m =>                          //Capture : [Year]/[startDay]-[endDay]
+{
+    var year = int.Parse(m[0]);
+    var startDay = int.Parse(m[1]);
+    var endDay = int.Parse(m[2]);
+    Console.WriteLine($"Year : {year} | StartDay : {startDay} | EndDay : {endDay}");
+    return () => Console.WriteLine("Solver : Year/startDay-EndDay");
 
 }) ??
 new Action(() => {
