@@ -138,12 +138,12 @@ class Runner {
     public static void RunAll(params Solver[] solvers) {
         var errors = new List<string>();
 
-        var lastYear = -1;
+        //var lastYear = -1;
         foreach (var solver in solvers) {
-            if (lastYear != solver.Year()) {
-                solver.SplashScreen().Show();
-                lastYear = solver.Year();
-            }
+            //if (lastYear != solver.Year()) {
+            //    solver.SplashScreen().Show();
+            //    lastYear = solver.Year();
+            //}
 
             var result = RunSolver(solver);
             WriteLine();
