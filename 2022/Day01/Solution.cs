@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace AdventOfCode.Y2022.Day01;
 
@@ -12,21 +9,15 @@ class Solution : Solver {
 
     IEnumerable<string[]> chunks;
 
-    public object PartOne(string input) {
-        return AggregateSum(input).Max();
-    }
+    public object PartOne(string input) => ElfCaloriesInOrder(input).First();
 
-    public object PartTwo(string input) {
-        return AggregateSum(input)
-            .OrderDescending()
-            .Take(3).Sum();
-    }
+    public object PartTwo(string input) => ElfCaloriesInOrder(input).Take(3).Sum();
 
-    private IEnumerable<int> AggregateSum(string input)
+    private IEnumerable<int> ElfCaloriesInOrder(string input)
     {
         chunks = input.Split("\n\n").Select(x => x.Split("\n"));
         return chunks.Select(arr => Array.ConvertAll(arr, int.Parse))
-        .Select(x => x.Sum());
+        .Select(x => x.Sum()).OrderDescending();
         
     }
 }
