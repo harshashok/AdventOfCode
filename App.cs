@@ -165,6 +165,7 @@ class Usage {
             >  all                   Solve everything
 
             >  calendars             Show the calendars
+            >  sample [year]/[day]   Run using sample input
 
             > 2) To start working on new problems:
             > login to https://adventofcode.com, then copy your session cookie, and export 

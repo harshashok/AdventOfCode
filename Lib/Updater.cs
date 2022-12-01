@@ -21,8 +21,10 @@ class Updater {
 
         var session = GetSession();
         var baseAddress = new Uri("https://adventofcode.com/");
+        var requester = new DefaultHttpRequester("github.com/harshashok/AdventOfCode by harshashok");
 
         var context = BrowsingContext.New(Configuration.Default
+            .With(requester)
             .WithDefaultLoader()
             .WithCss()
             .WithDefaultCookies()
@@ -242,9 +244,5 @@ class Updater {
     {
         var file = Path.Combine(Dir(problem.Year, problem.Day), "sample.refout");
         WriteFile(file, "");
-        //if (problem.Answers.Any())
-        //{
-        //    WriteFile(file, string.Join("\n", problem.Answers));
-        //}
     }
 }
