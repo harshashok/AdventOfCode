@@ -17,7 +17,6 @@ class Solution : Solver {
     {
         chunks = input.Split("\n\n").Select(x => x.Split("\n"));
         return chunks.Select(arr => Array.ConvertAll(arr, int.Parse))
-        .Select(x => x.Sum()).OrderDescending();
-        
+        .Select(x => x.Sum()).OrderDescending();        
     }
 }

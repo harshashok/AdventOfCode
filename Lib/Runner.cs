@@ -92,7 +92,8 @@ class Runner {
 
         var workingDir = solver.WorkingDir();
         var indent = "    ";
-        Write(ConsoleColor.White, $"{indent}{solver.DayName()}: {solver.GetName()}");
+        var isSample = sample ? "[SAMPLE]" : "";
+        Write(ConsoleColor.White, $"{indent}{solver.DayName()}: {solver.GetName()} {isSample}");
         WriteLine();
         var dir = workingDir;
         var file = Path.Combine(workingDir, sample ? "sample.in" : "input.in");
