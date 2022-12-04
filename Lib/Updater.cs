@@ -237,12 +237,17 @@ class Updater {
     void UpdateSampleInput(Problem problem)
     {
         var file = Path.Combine(Dir(problem.Year, problem.Day), "sample.in");
-        WriteFile(file, "");
+        if (!File.Exists(file)) {
+            WriteFile(file, "");
+        }
+        
     }
 
     void UpdateSampleRefout(Problem problem)
     {
         var file = Path.Combine(Dir(problem.Year, problem.Day), "sample.refout");
-        WriteFile(file, "");
+        if (!File.Exists(file)) {
+            WriteFile(file, "");
+        }
     }
 }
