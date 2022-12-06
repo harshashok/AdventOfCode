@@ -1,9 +1,9 @@
 
-# Advent of Code (2015-2021)
+# Advent of Code (2021-2022)
 C# solutions to the Advent of Code problems.
 Check out https://adventofcode.com.
 
-<a href="https://adventofcode.com"><img src="2021/calendar.svg" width="80%" /></a>
+<a href="https://adventofcode.com"><img src="2022/calendar.svg" width="80%" /></a>
 
 The goal is to keep my C# knowledge fresh and to follow the latest changes of the language.
 
@@ -30,7 +30,7 @@ start working on your own. The framework part is pretty stable and you get testi
 
 ## Dependencies
 
-- This project is based on `.NET 7`  and `C# 11`. It should work on Windows, Linux and OS-X.
+- This project is based on `.NET 6`  and `C# 10`. It should work on Windows, Linux and OS-X.
 - `AngleSharp` is used for problem download.
 
 ## Running
@@ -51,6 +51,7 @@ Usage: dotnet run [arguments]
  all                   Solve everything
 
  calendars             Show the calendars
+ sample [year]/[day]   Run using sample input
 
 2) To start working on new problems:
 login to https://adventofcode.com, then copy your session cookie, and export 

@@ -39,13 +39,13 @@ class Updater {
             Directory.CreateDirectory(dir);
         }
 
-        //var years = Assembly.GetEntryAssembly().GetTypes()
-        //    ?.Where(t => t.GetTypeInfo().IsClass && typeof(Solver).IsAssignableFrom(t))
-        //    ?.Select(tsolver => SolverExtensions.Year(tsolver));
-        //if(years != null)
-        //{
-        //    UpdateProjectReadme(years.Min(), years.Max());
-        //}
+        var years = Assembly.GetEntryAssembly().GetTypes()
+            ?.Where(t => t.GetTypeInfo().IsClass && typeof(Solver).IsAssignableFrom(t))
+            ?.Select(tsolver => SolverExtensions.Year(tsolver));
+        if (years != null)
+        {
+            UpdateProjectReadme(years.Min(), years.Max());
+        }
 
         UpdateReadmeForYear(calendar);
         UpdateSplashScreen(calendar);
