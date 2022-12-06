@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace AdventOfCode.Y2022.Day02;
 
@@ -74,8 +72,6 @@ class Solution : Solver {
 
     private Hand StrategyHand(Match strategy, Hand oppHand)
     {
-        //var strategy = stratMap.GetValueOrDefault(val);
-
         if(strategy == Match.Win)
         {
             if (oppHand == Hand.Rock)    return Hand.Paper;

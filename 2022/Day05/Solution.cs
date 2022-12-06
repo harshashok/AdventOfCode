@@ -16,7 +16,7 @@ class Solution : Solver {
 
     public object PartOne(string input) {
         ParseInputToStack(input);
-
+        
         moves.ForEach(m =>
               {
                   var sourceStack = stackList.GetValueOrDefault(m.source);
@@ -27,7 +27,8 @@ class Solution : Solver {
                       destStack.Push(sourceStack.Pop());
                       ctr--;
                   };
-              });
+              }
+        );
 
         return string.Join("", stackList.Select(x => x.Value.Pop()))
                    .Replace("[", string.Empty)
@@ -73,10 +74,10 @@ class Solution : Solver {
         Regex regex_moves = new(pattern_moves);
 
         stackList = new();
+        moves = new();
         Enumerable.Range(1, stackSize)
             .ToList()
             .ForEach(i => stackList.Add(i, new()));
-        moves = new();
 
         int ctr = 1;
         for(int i = crateInput.Length-2; i>=0; i--)
@@ -104,6 +105,5 @@ class Solution : Solver {
             moves.Add(new Move(arr[0], arr[1], arr[2]));
         }
     }
-
     record Move(int qty, int source, int destination);
 }

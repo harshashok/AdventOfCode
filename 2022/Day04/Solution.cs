@@ -37,8 +37,8 @@ class Solution : Solver {
         var s2 = Math.Abs(pair2[0] - pair2[1]) + 1;
 
         return s1 >= s2 ?
-        new ElfPair (pair1[0], pair1[1], pair2[0], pair2[1]) :
-        new ElfPair (pair2[0], pair2[1], pair1[0], pair1[1]);
+            new ElfPair (pair1[0], pair1[1], pair2[0], pair2[1]) :
+            new ElfPair (pair2[0], pair2[1], pair1[0], pair1[1]);
     }
 
     private static bool CheckRangeFullyContained(ElfPair elfPair)
