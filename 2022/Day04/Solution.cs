@@ -41,11 +41,11 @@ class Solution : Solver {
         new ElfPair (pair2[0], pair2[1], pair1[0], pair1[1]);
     }
 
-    private bool CheckRangeFullyContained(ElfPair elfPair)
+    private static bool CheckRangeFullyContained(ElfPair elfPair)
     {
         return elfPair.startY >= elfPair.startX && elfPair.endY <= elfPair.endX;
     }
-    private bool CheckRangePartiallyContained(ElfPair elfPair)
+    private static bool CheckRangePartiallyContained(ElfPair elfPair)
     {
         return elfPair.startY >= elfPair.startX && elfPair.startY <= elfPair.endX ||
                elfPair.endY >= elfPair.startX && elfPair.endY <= elfPair.endX;
