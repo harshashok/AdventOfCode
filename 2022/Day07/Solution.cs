@@ -77,21 +77,6 @@ class Solution : Solver {
         return dirMap;
     }
 
-    private string GetUniqueDirName1(TreeNode<FileNode> node)
-    {
-        if (node == null) return null;
-
-        var fileNode = node.GetValue();
-
-        if (fileNode.fileType != "dir") return null;
-
-        if (fileNode.name == "/") return fileNode.name;
-
-        var parent = node.GetParentValue();
-
-        return String.Format("{0}-{1}", parent.name, fileNode.name);
-    }
-
     private string GetUniqueDirName(TreeNode<FileNode> node)
     {
         TreeNode<FileNode> current = node;
