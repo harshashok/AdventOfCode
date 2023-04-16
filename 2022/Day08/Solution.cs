@@ -15,20 +15,13 @@ class Solution : Solver {
     int XSize;
     int YSize;
 
-    enum Direction
-    {
-        up,
-        down,
-        left,
-        right
-    }
     public object PartOne(string input) {
         ParseForest(input);
         return CountVisibleTrees();
     }
 
     public object PartTwo(string input) {
-        return ComputeScenicNumber().Max();
+        return ComputeScenicNumbers().Max();
     }
 
     public void ParseForest(string input)
@@ -52,18 +45,18 @@ class Solution : Solver {
         return visible;
     }
 
-    private List<int> ComputeScenicNumber()
+    private List<int> ComputeScenicNumbers()
     {
         List<int> scenicNumbers = new();
         for (int x = 0; x < XSize; x++)
             for (int y = 0; y < YSize; y++)
             {
-                scenicNumbers.Add(TestScenic(x, y));
+                scenicNumbers.Add(ScenicNumber(x, y));
             }
         return scenicNumbers;
     }
 
-    private int TestScenic(int x, int y)
+    private int ScenicNumber(int x, int y)
     {
         if (IsEdgeTree(x, y)) return 0;
 
@@ -99,9 +92,4 @@ class Solution : Solver {
     private bool IsVisible_Bottom(int x, int y) => (!(Enumerable.Range(x, XSize - x).Where(i => (i != x) && forestMap[i][y] >= forestMap[x][y])).Any());
     private bool IsVisible_Left(int x, int y) => (!(Enumerable.Range(0, y).Where(i => (i != y) && forestMap[x][i] >= forestMap[x][y])).Any());
     private bool IsVisible_Right(int x, int y) => (!(Enumerable.Range(y, YSize - y).Where(i => (i != y) && forestMap[x][i] >= forestMap[x][y])).Any());
-
-    private IEnumerable<int> Visible_Top(int x, int y) =>  (Enumerable.Range(0, x).Where(i => (i != x) && forestMap[i][y] >= forestMap[x][y]));
-    private IEnumerable<int> Visible_Bottom(int x, int y) => (Enumerable.Range(x, XSize - x).Where(i => (i != x) && forestMap[i][y] >= forestMap[x][y]));
-    private IEnumerable<int> Visible_Left(int x, int y) => (Enumerable.Range(0, y).Where(i => (i != y) && forestMap[x][i] >= forestMap[x][y]));
-    private IEnumerable<int> Visible_Right(int x, int y) => (Enumerable.Range(y, YSize - y).Where(i => (i != y) && forestMap[x][i] >= forestMap[x][y]));
 }
