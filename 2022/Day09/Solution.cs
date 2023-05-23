@@ -38,63 +38,9 @@ class Solution : Solver {
         int movectr = 0;
         foreach (var move in moves)
         {
-            //SimulateSingleMoveSteps(move);
             SimulateSingleMoveSteps(move);
             movectr++;
-            VerifyKnotsAfterMove(movectr);
         }
-    }
-
-    private void SimulateSingleMove(Move move)
-    {
-        //if (move.dir == "U")
-        //{
-        //    for (int i = 0; i < move.steps; i++)
-        //    {
-        //        head.Offset(1, 0);
-        //        if (!InVicinity(head, tail))
-        //        {
-        //            CalculateOffSet();
-        //            visited.Add(new Point(tail.X, tail.Y));
-        //        }
-        //    }
-        //}
-        //else if (move.dir == "D")
-        //{
-        //    for (int i = 0; i < move.steps; i++)
-        //    {
-        //        head.Offset(-1, 0);
-        //        if (!InVicinity(head, tail))
-        //        {
-        //            CalculateOffSet();
-        //            visited.Add(new Point(tail.X, tail.Y));
-        //        }
-        //    }
-        //}
-        //else if (move.dir == "L")
-        //{
-        //    for (int i = 0; i < move.steps; i++)
-        //    {
-        //        head.Offset(0, -1);
-        //        if (!InVicinity(head, tail))
-        //        {
-        //            CalculateOffSet();
-        //            visited.Add(new Point(tail.X, tail.Y));
-        //        }
-        //    }
-        //}
-        //else if (move.dir == "R")
-        //{
-        //    for (int i = 0; i < move.steps; i++)
-        //    {
-        //        head.Offset(0, 1);
-        //        if (!InVicinity(head, tail))
-        //        {
-        //            CalculateOffSet();
-        //            visited.Add(new Point(tail.X, tail.Y));
-        //        }
-        //    }
-        //}
     }
 
     private void SimulateSingleMoveSteps(Move move)
@@ -107,31 +53,7 @@ class Solution : Solver {
 
                 if (!InVicinity(knots[k], knots[k + 1]))
                 {
-                    //if(move.dir == "L" && move.steps == 1)
-                    //{
-                    //    Console.Write("This move!");
-                    //}
                     CalculateOffSet(ref knots[k], ref knots[k +1]);
-                    //if (!InVicinity(knots[k], knots[k + 1]))
-                    //{
-                    //    throw new Exception($"Details : knot-k : {knots[k].ToString()} | knots-k+1 : {knots[k+1].ToString()} | move : {move.ToString() }");
-                    //}
-                    visited.Add(new Point(knots[^1].X, knots[^1].Y));
-                }
-            }
-        }
-    }
-
-    private void SimulateSingleMoveSteps(Move move, ref Point head, ref Point tail)
-    {
-        for (int i = 0; i < move.steps; i++)
-        {
-            for (int k = 0; k < knots.Length-1; k++)
-            {
-                moveInDirection(move.dir, ref head);
-                if (!InVicinity(head, tail))
-                {
-                    CalculateOffSet(ref head, ref tail);
                     visited.Add(new Point(knots[^1].X, knots[^1].Y));
                 }
             }
@@ -142,13 +64,17 @@ class Solution : Solver {
     {
         switch (dir)
         {
-            case "U" : node.Offset(1, 0);
+            case "U":
+                node.Offset(1, 0);
                 break;
-            case "D": node.Offset(-1, 0);
+            case "D":
+                node.Offset(-1, 0);
                 break;
-            case "L": node.Offset(0, -1);
+            case "L":
+                node.Offset(0, -1);
                 break;
-            case "R": node.Offset(0, 1);
+            case "R":
+                node.Offset(0, 1);
                 break;
             default:
                 break;
@@ -164,7 +90,6 @@ class Solution : Solver {
     */
     private void CalculateOffSet(ref Point head, ref Point tail)
     {
-        Point original = new Point(tail.X, tail.Y);
         if (tail.X == head.X)  //same row
         {
             if (tail.Y > head.Y) tail.Offset(0, -1);
@@ -187,15 +112,6 @@ class Solution : Solver {
 
             if (tail.Y == head.Y + 2 && tail.X == head.X - 2) tail = new Point(head.X - 1, head.Y + 1);
             if (tail.Y == head.Y + 2 && tail.X == head.X + 2) tail = new Point(head.X + 1, head.Y + 1);
-            //if (tail.X == head.X + 2) tail = new Point(head.X + 1, head.Y);
-            //if (tail.X == head.X - 2) tail = new Point(head.X - 1, head.Y);
-            //if (tail.Y == head.Y + 2) tail = new Point(head.X, head.Y + 1);
-            //if (tail.Y == head.Y - 2) tail = new Point(head.X, head.Y - 1);
-        }
-
-        if(tail == original)
-        {
-            Console.WriteLine($"No change occured - Head : {head} | tail : {tail}");
         }
     }
 
@@ -232,17 +148,5 @@ class Solution : Solver {
         knots = Enumerable.Repeat(new Point(0, 0), knotCount).ToArray();
         visited = new();
         visited.Add(tail);
-    }
-
-    private void VerifyKnotsAfterMove(int ctr)
-    {
-        for (int k = 0; k < knots.Length - 1; k++)
-        {
-
-            if (!InVicinity(knots[k], knots[k + 1]))
-            {
-                throw new Exception($"Knot {k} | head: {knots[k]} | tail: {knots[k + 1]} at move {ctr}");
-            }
-        }
     }
 }
