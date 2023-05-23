@@ -11,7 +11,6 @@ namespace AdventOfCode.Y2022.Day09;
 [ProblemName("Rope Bridge")]      
 class Solution : Solver {
 
-
     Point head;
     Point tail;
     IEnumerable<Move> moves;
@@ -23,7 +22,6 @@ class Solution : Solver {
         ReadInput(input);
         SetupVars(2);
         SimulateMotion();
-
         return visited.Count;
     }
 
@@ -35,11 +33,9 @@ class Solution : Solver {
 
     private void SimulateMotion()
     {
-        int movectr = 0;
         foreach (var move in moves)
         {
             SimulateSingleMoveSteps(move);
-            movectr++;
         }
     }
 
@@ -47,38 +43,25 @@ class Solution : Solver {
     {
         for (int i = 0; i < move.steps; i++)
         {
-            moveInDirection(move.dir, ref knots[0]);
+            MoveInDirection(move.dir, ref knots[0]);
             for (int k = 0; k < knots.Length - 1; k++)
             {
-
-                if (!InVicinity(knots[k], knots[k + 1]))
-                {
-                    CalculateOffSet(ref knots[k], ref knots[k +1]);
-                    visited.Add(new Point(knots[^1].X, knots[^1].Y));
-                }
+                CalculateOffsetV2(ref knots[k], ref knots[k + 1]);
+                visited.Add(new Point(knots[^1].X, knots[^1].Y));
             }
         }
     }
 
-    private void moveInDirection(string dir, ref Point node)
+    private void MoveInDirection(string dir, ref Point node)
     {
-        switch (dir)
+        node = dir switch
         {
-            case "U":
-                node.Offset(1, 0);
-                break;
-            case "D":
-                node.Offset(-1, 0);
-                break;
-            case "L":
-                node.Offset(0, -1);
-                break;
-            case "R":
-                node.Offset(0, 1);
-                break;
-            default:
-                break;
-        }
+            "U" => new Point(node.X + 1, node.Y),
+            "D" => new Point(node.X - 1, node.Y),
+            "L" => new Point(node.X, node.Y - 1),
+            "R" => new Point(node.X, node.Y + 1),
+            _ => throw new ArgumentOutOfRangeException(dir)
+        };
     }
 
     /* Offset calc
@@ -88,53 +71,17 @@ class Solution : Solver {
     *   (x-1,y-2) | x-1,y-1 | x-1,y | x-1,y+1 | (x-1,y+2)   
     *   (x-2,y-2)  (x-2,y-1)         (x-2,y+1)  (x-2,y+2)
     */
-    private void CalculateOffSet(ref Point head, ref Point tail)
+
+    private void CalculateOffsetV2(ref Point head, ref Point tail)
     {
-        if (tail.X == head.X)  //same row
-        {
-            if (tail.Y > head.Y) tail.Offset(0, -1);
-            else tail.Offset(0,1);
-        }
-        else if (tail.Y == head.Y) //same column
-        {
-            if (tail.X > head.X) tail.Offset(-1, 0);
-            else tail.Offset(1, 0);
-        }
-        else
-        {
-            if (tail.X == head.X + 2 && (tail.Y == head.Y - 1 || tail.Y == head.Y + 1)) tail = new Point(head.X + 1, head.Y);
-            if (tail.X == head.X - 2 && (tail.Y == head.Y - 1 || tail.Y == head.Y + 1)) tail = new Point(head.X - 1, head.Y);
-            if (tail.Y == head.Y + 2 && (tail.X == head.X + 1 || tail.X == head.X - 1)) tail = new Point(head.X, head.Y + 1);
-            if (tail.Y == head.Y - 2 && (tail.X == head.X + 1 || tail.X == head.X - 1)) tail = new Point(head.X, head.Y - 1);
+        var offsetX = tail.X - head.X;
+        var offsetY = tail.Y - head.Y;
 
-            if (tail.Y == head.Y - 2 && tail.X == head.X + 2) tail = new Point(head.X + 1, head.Y - 1);
-            if (tail.Y == head.Y - 2 && tail.X == head.X - 2) tail = new Point(head.X - 1, head.Y - 1);
-
-            if (tail.Y == head.Y + 2 && tail.X == head.X - 2) tail = new Point(head.X - 1, head.Y + 1);
-            if (tail.Y == head.Y + 2 && tail.X == head.X + 2) tail = new Point(head.X + 1, head.Y + 1);
+        if(Math.Abs(offsetX) > 1 || Math.Abs(offsetY) > 1)
+        {
+            tail = new Point(tail.X - Math.Sign(offsetX), tail.Y - Math.Sign(offsetY));
         }
     }
-
-    /* Vicinity
-    *   | x+1,y-1 | x+1,y | x+1,y+1 |
-    *   |  x,y-1  | x,y   |  x,y+1  |
-    *   | x-1,y-1 | x-1,y | x-1,y+1 |
-    */
-    private bool InVicinity(Point head, Point tail) =>
-    (
-            (tail == head) ||
-
-            (tail.X == head.X + 1 && tail.Y == head.Y - 1) ||
-            (tail.X == head.X + 1 && tail.Y == head.Y) ||
-            (tail.X == head.X + 1 && tail.Y == head.Y + 1) ||
-
-            (tail.X == head.X && tail.Y == head.Y - 1) ||
-            (tail.X == head.X && tail.Y == head.Y + 1) ||
-
-            (tail.X == head.X - 1 && tail.Y == head.Y - 1) ||
-            (tail.X == head.X - 1 && tail.Y == head.Y) ||
-            (tail.X == head.X - 1 && tail.Y == head.Y + 1)
-    );
 
     private void ReadInput(string input)
     {
@@ -147,6 +94,6 @@ class Solution : Solver {
     {
         knots = Enumerable.Repeat(new Point(0, 0), knotCount).ToArray();
         visited = new();
-        visited.Add(tail);
+        visited.Add(new Point(0, 0));
     }
 }
