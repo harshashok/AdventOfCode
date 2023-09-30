@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Drawing;
 
 namespace AdventOfCode.Y2022.Day10;
 
@@ -18,17 +19,60 @@ class Solution : Solver {
         ReadInput(input);
 
         var samplings = new[] { 20, 60, 100, 140, 180, 220 };
-        return ExcecuteCommand()
+        return ExecuteCommand()
             .Where(signal => samplings.Contains(signal.ticks))
             .Select(signal => signal.regX * signal.ticks)
             .Sum();
     }
 
     public object PartTwo(string input) {
+        var crtLine = 0;
+        return ExecuteCommand()
+            .Select(item =>
+            {
+                var cycle = (item.ticks) - (40 * crtLine);
+                var x = item.regX;
+                if (item.ticks % 40 == 0) { crtLine++; }
+                return ((cycle == x) || (cycle == x + 1) || (cycle == x + 2)) ? '#' : ' ';
+            })
+            .Chunk(40)
+            .Select(line => new string(line))
+            .Aggregate("", (screen, line) => screen + line + "\n")
+            .Ocr();
+    }
+
+    private object solvePart2Iterator()
+    {
+        Console.WriteLine();
+
+        var iterator = ExecuteCommand().GetEnumerator();
+        var samplings = new[] { 40, 80, 120, 160, 200, 240 };
+        int crtLine = 0;
+
+        while (iterator.MoveNext())
+        {
+            var item = iterator.Current;
+            var cycle = item.ticks - (40 * crtLine);
+            if ((cycle == item.regX) || (cycle == item.regX + 1) || (cycle == item.regX + 2))
+            {
+                Render("#");
+            }
+            else
+            {
+                Render(" ");
+            }
+
+            if (samplings.Contains(item.ticks))
+            {
+                Console.WriteLine();
+                crtLine++;
+            }
+        }
+        Console.WriteLine();
         return 0;
     }
 
-    private IEnumerable<(int ticks, int regX)> ExcecuteCommand()
+    private IEnumerable<(int ticks, int regX)> ExecuteCommand()
     {
         var (ticks, regX) = (1, 1);
 
@@ -58,5 +102,13 @@ class Solution : Solver {
                 new OpCode(instr: l[0],
                             value: l.Length > 1 ? Int32.Parse(l[1]) : 0));
         opcodes = new List<OpCode>(instructions);
+    }
+
+    private void Render(string text)
+    {
+        var c = Console.ForegroundColor;
+        Console.ForegroundColor = (text == ".") ? ConsoleColor.DarkGray : ConsoleColor.DarkGreen;
+        Console.Write(text);
+        Console.ForegroundColor = c;
     }
 }
