@@ -11,8 +11,6 @@ namespace AdventOfCode.Y2022.Day09;
 [ProblemName("Rope Bridge")]      
 class Solution : Solver {
 
-    Point head;
-    Point tail;
     IEnumerable<Move> moves;
     HashSet<Point> visited;
     Point[] knots;
