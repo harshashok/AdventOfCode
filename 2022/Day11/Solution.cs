@@ -15,10 +15,9 @@ class Solution : Solver {
 
     static Dictionary<int, Monkey> monkeyList;
 
-    static bool logExec = false;
-
     public object PartOne(string input) {
         ReadInput(input);
+
         Rounds(20, x => x/3);
         return monkeyList.Select(x => x.Value)
             .OrderByDescending(x => x.inspectionCount)
@@ -30,6 +29,7 @@ class Solution : Solver {
         ReadInput(input);
         long mod = monkeyList.Select(x => x.Value)
             .Aggregate(1, (accumulate, x) => accumulate * x.testCase);
+
         Rounds(10000, x => x % mod);
 
         return monkeyList.Select(x => x.Value)
@@ -108,7 +108,6 @@ class Solution : Solver {
         monkey.testCaseFalse = int.Parse(value_test_false);
         monkey.inspectionCount = 0;
 
-        //todo : refactor to just using constructor.
         return monkey;
     }
 
@@ -129,80 +128,30 @@ class Solution : Solver {
 
         public Monkey() { }
 
-        public Monkey(int monkeyNumber, Queue<long> items, (string A, char op, string B) operation, int testCase, int testCaseTrue, int testCaseFalse)
-        {
-            this.monkeyNumber = monkeyNumber;
-            this.items = items;
-            this.operation = operation;
-            this.testCase = testCase;
-            this.testCaseTrue = testCaseTrue;
-            this.testCaseFalse = testCaseFalse;
-            this.inspectionCount = 0;
-        }
-
         public void Inspection(Func<long, long> worryModifier)
         {
-            //  Monkey inspects an item with a worry level of 79.
-            Log($"Monkey {this.monkeyNumber}");
             while (items.Any())
             {
-                var itemq = items.Dequeue();
+                var item = items.Dequeue();
                 inspectionCount++;
-                Log($"\tMonkey inspects an item with a worry level of {itemq}.");
-
-                itemq = PerformOperation(itemq);
-                Log($"\t\tWorry level is multiplied by {operation} to {itemq}.");
-
-                itemq = worryModifier(itemq);
-                Log($"\t\tMonkey gets bored with item. Worry level is divided by 3 to {itemq}.");
-
-                if (itemq % testCase == 0)
-                {
-                    ThrowToMonkey(testCaseTrue, itemq);
-                    Log($"\t\tCurrent worry level is divisible by {testCase}.");
-                    Log($"\t\tItem with worry level {itemq} is thrown to monkey {testCaseTrue}.");
-                }
-                else
-                {
-                    ThrowToMonkey(testCaseFalse, itemq);
-                    Log($"\t\tCurrent worry level is not divisible by {testCase}.");
-                    Log($"\t\tItem with worry level {itemq} is thrown to monkey {testCaseFalse}.");
-                }
+                item = PerformOperation(item);
+                item = worryModifier(item);
+                var throwToMonkey = (item % testCase == 0) ? testCaseTrue : testCaseFalse;
+                monkeyList.GetValueOrDefault(throwToMonkey).items.Enqueue(item);
             }
         }
-
-        private void ThrowToMonkey(int monkeyNumber, long item) =>
-            monkeyList.GetValueOrDefault(monkeyNumber).items.Enqueue(item);
 
         private long PerformOperation(long item)
         {
-            if (operation.A != "old") throw new InvalidOperationException($"{operation.A} is not a valid A arg");
-
-            long A = item;
-            long B = 0;
-
-            if (int.TryParse(operation.B, out int result))
-            {
-                B = result;
-            }
-            else if (operation.B == "old")
-            {
-                B = item;
-            }
-
+            long B = int.TryParse(operation.B, out int res) ? res : item;
             return operation.op switch
             {
-                '+' => A + B,
-                '-' => A - B,
-                '*' => A * B,
-                '/' => A / B,
-                _ => throw new ArgumentOutOfRangeException(operation.op.ToString())
+                '+' => item + B,
+                '-' => item - B,
+                '*' => item * B,
+                '/' => item / B,
+                _ => throw new ArgumentOutOfRangeException(nameof(operation.op))
             };
         }
-    }
-
-    public static void Log(string log, bool forceLog = false)
-    {
-        if (logExec || forceLog) Console.WriteLine(log);
     }
 }
