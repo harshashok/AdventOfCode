@@ -19,31 +19,34 @@ class Solution : Solver {
 
     public object PartOne(string input) {
         ReadInput(input);
-        Rounds(20);
+        Rounds(20, x => x/3);
         return monkeyList.Select(x => x.Value)
             .OrderByDescending(x => x.inspectionCount)
             .Take(2)
             .Aggregate(1, (accumulated, x) => accumulated * x.inspectionCount);
-
     }
 
     public object PartTwo(string input) {
-        return 0;
+        ReadInput(input);
+        long mod = monkeyList.Select(x => x.Value)
+            .Aggregate(1, (accumulate, x) => accumulate * x.testCase);
+        Rounds(10000, x => x % mod);
+
+        return monkeyList.Select(x => x.Value)
+            .OrderByDescending(x => x.inspectionCount)
+            .Take(2)
+            .Aggregate(1L, (accumulated, x) => accumulated * x.inspectionCount);
     }
 
-    private void Rounds(int rounds)
+    private void Rounds(int rounds, Func<long, long> worryMod)
     {
         for (int i = 1; i <= rounds; i++)
         {
-            Round();
-        }
-    }
-    private void Round()
-    {
-        for (int i = 0; i < monkeyList.Count; i++)
-        {
-            var monkey = monkeyList.GetValueOrDefault(i);
-            monkey.Inspection();
+            for (int j = 0; j < monkeyList.Count; j++)
+            {
+                var monkey = monkeyList.GetValueOrDefault(j);
+                monkey.Inspection(worryMod);
+            }
         }
     }
 
@@ -137,35 +140,38 @@ class Solution : Solver {
             this.inspectionCount = 0;
         }
 
-        public void Inspection()
+        public void Inspection(Func<long, long> worryModifier)
         {
             //  Monkey inspects an item with a worry level of 79.
             Log($"Monkey {this.monkeyNumber}");
             while (items.Any())
             {
-                var item = items.Dequeue();
+                var itemq = items.Dequeue();
                 inspectionCount++;
-                Log($"\tMonkey inspects an item with a worry level of {item}.");
-                var itemq = PerformOperation(item);
+                Log($"\tMonkey inspects an item with a worry level of {itemq}.");
+
+                itemq = PerformOperation(itemq);
                 Log($"\t\tWorry level is multiplied by {operation} to {itemq}.");
-                itemq /= 3;
+
+                itemq = worryModifier(itemq);
                 Log($"\t\tMonkey gets bored with item. Worry level is divided by 3 to {itemq}.");
+
                 if (itemq % testCase == 0)
                 {
-                    ThrowToMonkey(testCaseTrue, (int)itemq);
+                    ThrowToMonkey(testCaseTrue, itemq);
                     Log($"\t\tCurrent worry level is divisible by {testCase}.");
                     Log($"\t\tItem with worry level {itemq} is thrown to monkey {testCaseTrue}.");
                 }
                 else
                 {
-                    ThrowToMonkey(testCaseFalse, (int)itemq);
+                    ThrowToMonkey(testCaseFalse, itemq);
                     Log($"\t\tCurrent worry level is not divisible by {testCase}.");
                     Log($"\t\tItem with worry level {itemq} is thrown to monkey {testCaseFalse}.");
                 }
             }
         }
 
-        private void ThrowToMonkey(int monkeyNumber, int item) =>
+        private void ThrowToMonkey(int monkeyNumber, long item) =>
             monkeyList.GetValueOrDefault(monkeyNumber).items.Enqueue(item);
 
         private long PerformOperation(long item)
@@ -193,11 +199,10 @@ class Solution : Solver {
                 _ => throw new ArgumentOutOfRangeException(operation.op.ToString())
             };
         }
+    }
 
-
-        public static void Log(string log)
-        {
-            if (logExec) Console.WriteLine(log);
-        }
+    public static void Log(string log, bool forceLog = false)
+    {
+        if (logExec || forceLog) Console.WriteLine(log);
     }
 }
