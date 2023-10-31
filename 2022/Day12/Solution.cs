@@ -13,6 +13,7 @@ class Solution : Solver {
 
     private char[][] gridMap;
     int X, Y;  //grid length, height.
+    Dictionary<Point, Point?> cameFrom = new(); //path A->B is stored as came_from[B] == A | key:B val:A
     private Point start, end;
 
     public object PartOne(string input) {
@@ -24,34 +25,25 @@ class Solution : Solver {
         return 0;
     }
 
-    private void Dijkstra()
-    {
-
-    }
     private int AStarSearch()
     {
         PriorityQueue<Point, int> frontier = new();
         List<Point> visited = new();
-        Dictionary<Point, Point?> cameFrom = new(); //path A->B is stored as came_from[B] == A | key:B val:A
         Dictionary<Point, int> costSoFar = new();
         frontier.Enqueue(start, 0);
         cameFrom[start] = null;
         costSoFar[start] = 0;
-
-        while (frontier.Peek() != null)
+        
+        while (frontier.TryPeek(out _, out _))
         {
             var curr = frontier.Dequeue();
             visited.Add(curr);
-            if (curr == end) break;
 
             foreach (var next in GetEligibleNeigbors(curr))
             {
-                if (visited.Contains(next))
-                {
-                    continue;
-                }
+                if (visited.Contains(next)) continue;
 
-                int newCost = costSoFar[curr] + 1; //TODO : this needs to be a real cost system
+                int newCost = costSoFar[curr] + 1;
                 if (!costSoFar.TryGetValue(next, out _) || newCost < costSoFar[next])
                 {
                     costSoFar[next] = newCost;
@@ -62,9 +54,14 @@ class Solution : Solver {
             }
         }
 
+        return GetPathDistance();
+    }
+
+    private int GetPathDistance()
+    {
         List<Point> path = new();
         Point current = end;
-        while(current != start)
+        while (current != start)
         {
             path.Add(current);
             current = (Point)cameFrom[current];
@@ -91,20 +88,11 @@ class Solution : Solver {
     private List<Point> GetEligibleNeigbors(Point point)
     {
         List<Point> validNbors = new();
-
         if (EligibleNbor(point, point.X-1, point.Y)) validNbors.Add(new Point(point.X-1, point.Y));
         if (EligibleNbor(point, point.X, point.Y-1)) validNbors.Add(new Point(point.X, point.Y-1));
         if (EligibleNbor(point, point.X, point.Y+1)) validNbors.Add(new Point(point.X, point.Y+1));
         if (EligibleNbor(point, point.X+1, point.Y)) validNbors.Add(new Point(point.X+1, point.Y));
-
         return validNbors;
-    }
-
-    private bool EligibleNbor_old(Point curr, int x, int y)
-    {
-        var isValid = ValidGridPoint(x, y);
-        var retVal = isValid && (gridMap[curr.X][curr.Y] == gridMap[x][y] || gridMap[curr.X][curr.Y] + 1 == gridMap[x][y]);
-        return retVal;
     }
 
     private bool EligibleNbor(Point curr, int x, int y)
@@ -129,7 +117,7 @@ class Solution : Solver {
                 return x.ToArray();
             })
             .ToArray();
-        SetStartEndPoints();
+        SetStartEndPoints(start, end);
         X = gridMap.Length;
         Y = gridMap[0].Length;
     }
@@ -144,7 +132,7 @@ class Solution : Solver {
         }
     }
 
-    private void SetStartEndPoints()
+    private void SetStartEndPoints(Point start, Point end)
     {
         gridMap[start.X][start.Y] = 'a';
         gridMap[end.X][end.Y] = 'z';
