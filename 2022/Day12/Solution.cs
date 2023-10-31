@@ -12,7 +12,7 @@ namespace AdventOfCode.Y2022.Day12;
 class Solution : Solver {
 
     private char[][] gridMap;
-    int X, Y;
+    int X, Y;  //grid length, height.
     private Point start, end;
 
     public object PartOne(string input) {
@@ -31,24 +31,31 @@ class Solution : Solver {
     private int AStarSearch()
     {
         PriorityQueue<Point, int> frontier = new();
-        frontier.Enqueue(start, 0);
+        List<Point> visited = new();
         Dictionary<Point, Point?> cameFrom = new(); //path A->B is stored as came_from[B] == A | key:B val:A
         Dictionary<Point, int> costSoFar = new();
+        frontier.Enqueue(start, 0);
         cameFrom[start] = null;
         costSoFar[start] = 0;
 
         while (frontier.Peek() != null)
         {
             var curr = frontier.Dequeue();
+            visited.Add(curr);
             if (curr == end) break;
 
             foreach (var next in GetEligibleNeigbors(curr))
             {
-                int newCost = costSoFar[curr]; //TODO : this needs to be a real cost system
+                if (visited.Contains(next))
+                {
+                    continue;
+                }
+
+                int newCost = costSoFar[curr] + 1; //TODO : this needs to be a real cost system
                 if (!costSoFar.TryGetValue(next, out _) || newCost < costSoFar[next])
                 {
                     costSoFar[next] = newCost;
-                    var priority = newCost; //+ Heuristic(end, next);
+                    var priority = newCost + Heuristic(end, next);
                     frontier.Enqueue(next, (int)priority);
                     cameFrom[next] = curr;
                 }
