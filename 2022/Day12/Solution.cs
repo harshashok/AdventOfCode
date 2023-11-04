@@ -14,25 +14,28 @@ class Solution : Solver {
     private char[][] gridMap;
     int X, Y;  //grid length, height.
     Dictionary<Point, Point?> cameFrom = new(); //path A->B is stored as came_from[B] == A | key:B val:A
+    Dictionary<Point, int> costSoFar = new();
     private Point start, end;
+    private List<Point> otherGoals = new();
 
     public object PartOne(string input) {
         ReadInput(input);
-        return AStarSearch();
+        AStarSearch();
+        return GetPathDistanceFromPoint(start);
     }
 
     public object PartTwo(string input) {
-        return 0;
+        return otherGoals.Select(x => GetPathDistanceFromPoint(x)).Min();
+        //return GetPathDistanceFromPoint(new Point(0, 17));
     }
 
-    private int AStarSearch()
+    private void AStarSearch()
     {
         PriorityQueue<Point, int> frontier = new();
         List<Point> visited = new();
-        Dictionary<Point, int> costSoFar = new();
-        frontier.Enqueue(start, 0);
-        cameFrom[start] = null;
-        costSoFar[start] = 0;
+        frontier.Enqueue(end, 0);
+        cameFrom[end] = null;
+        costSoFar[end] = 0;
         
         while (frontier.TryPeek(out _, out _))
         {
@@ -53,20 +56,33 @@ class Solution : Solver {
                 }
             }
         }
-
-        return GetPathDistance();
     }
 
     private int GetPathDistance()
     {
         List<Point> path = new();
-        Point current = end;
-        while (current != start)
+        Point current = start;
+        while (current != end)
         {
             path.Add(current);
             current = (Point)cameFrom[current];
         }
-        path.Append(start);
+        path.Append(end);
+
+        return path.Count;
+    }
+
+    private int GetPathDistanceFromPoint(Point starting)
+    {
+        List<Point> path = new();
+        Point current = starting;
+        while (current != end)
+        {
+            path.Add(current);
+            if (!cameFrom.TryGetValue(current, out _)) return Int32.MaxValue;
+            current = (Point)cameFrom[current];
+        }
+        path.Append(end);
 
         return path.Count;
     }
@@ -98,6 +114,13 @@ class Solution : Solver {
     private bool EligibleNbor(Point curr, int x, int y)
     {
         var isValid = ValidGridPoint(x, y);
+        var retVal = isValid && (gridMap[curr.X][curr.Y] - gridMap[x][y]) <= 1;
+        return retVal;
+    }
+
+    private bool EligibleNbor_old(Point curr, int x, int y)
+    {
+        var isValid = ValidGridPoint(x, y);
         var retVal = isValid && (gridMap[x][y] - gridMap[curr.X][curr.Y]) <= 1;
         return retVal;
     }
@@ -112,7 +135,7 @@ class Solution : Solver {
             .Select((x, line) =>
             {
                 var startEnd = x.Select((c, index) => (c, index))
-                    .Where(pnt => pnt.c == 'S' || pnt.c == 'E');
+                    .Where(pnt => pnt.c == 'S' || pnt.c == 'E' || pnt.c == 'a');
                 InitStartEndPoints(startEnd, line);
                 return x.ToArray();
             })
@@ -129,6 +152,7 @@ class Solution : Solver {
         {
             if (x.c == 'S') start = new Point(line, x.i);
             if (x.c == 'E') end = new Point(line, x.i);
+            if (x.c == 'a') otherGoals.Add(new Point(line, x.i));
         }
     }
 
@@ -136,6 +160,7 @@ class Solution : Solver {
     {
         gridMap[start.X][start.Y] = 'a';
         gridMap[end.X][end.Y] = 'z';
+        otherGoals.Insert(0, start);
     }
 }
 
