@@ -16,7 +16,7 @@ class Solution : Solver {
     Dictionary<Point, Point?> cameFrom = new(); //path A->B is stored as came_from[B] == A | key:B val:A
     Dictionary<Point, int> costSoFar = new();
     private Point start, end;
-    private List<Point> otherGoals = new();
+    private List<Point> allGoals = new();
 
     public object PartOne(string input) {
         ReadInput(input);
@@ -25,10 +25,10 @@ class Solution : Solver {
     }
 
     public object PartTwo(string input) {
-        return otherGoals.Select(x => GetPathDistanceFromPoint(x)).Min();
-        //return GetPathDistanceFromPoint(new Point(0, 17));
+        return allGoals.Select(x => GetPathDistanceFromPoint(x)).Min();
     }
 
+    //Searching from the end goal 
     private void AStarSearch()
     {
         PriorityQueue<Point, int> frontier = new();
@@ -58,20 +58,6 @@ class Solution : Solver {
         }
     }
 
-    private int GetPathDistance()
-    {
-        List<Point> path = new();
-        Point current = start;
-        while (current != end)
-        {
-            path.Add(current);
-            current = (Point)cameFrom[current];
-        }
-        path.Append(end);
-
-        return path.Count;
-    }
-
     private int GetPathDistanceFromPoint(Point starting)
     {
         List<Point> path = new();
@@ -85,15 +71,6 @@ class Solution : Solver {
         path.Append(end);
 
         return path.Count;
-    }
-
-    private int CostCalculator(Point curr, Point next)
-    {
-        var value = (gridMap[next.X][next.Y] - gridMap[curr.X][curr.Y]);
-
-        if (value == 0 || value == 1) return 1;
-        if (value < 0) return Math.Abs(value);
-        return value;
     }
 
     /**
@@ -115,13 +92,6 @@ class Solution : Solver {
     {
         var isValid = ValidGridPoint(x, y);
         var retVal = isValid && (gridMap[curr.X][curr.Y] - gridMap[x][y]) <= 1;
-        return retVal;
-    }
-
-    private bool EligibleNbor_old(Point curr, int x, int y)
-    {
-        var isValid = ValidGridPoint(x, y);
-        var retVal = isValid && (gridMap[x][y] - gridMap[curr.X][curr.Y]) <= 1;
         return retVal;
     }
 
@@ -152,7 +122,7 @@ class Solution : Solver {
         {
             if (x.c == 'S') start = new Point(line, x.i);
             if (x.c == 'E') end = new Point(line, x.i);
-            if (x.c == 'a') otherGoals.Add(new Point(line, x.i));
+            if (x.c == 'a') allGoals.Add(new Point(line, x.i));
         }
     }
 
@@ -160,7 +130,7 @@ class Solution : Solver {
     {
         gridMap[start.X][start.Y] = 'a';
         gridMap[end.X][end.Y] = 'z';
-        otherGoals.Insert(0, start);
+        allGoals.Insert(0, start);
     }
 }
 
