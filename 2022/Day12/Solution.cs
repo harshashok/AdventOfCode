@@ -133,13 +133,3 @@ class Solution : Solver {
         allGoals.Insert(0, start);
     }
 }
-
-
-/** 
- * Things to do
- * 1. Parse to grid
- * 2. Find starting point (S) and ending point (E) - do this while parsing?
- * 3. method func to eval next step with S,E taken into account.
- * 4. A* Algorithm
- * 
-**/
