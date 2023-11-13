@@ -21,13 +21,9 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1701;1702</NoWarn>
     <NoWarn>1701;1702</NoWarn>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols></DebugSymbols>
-    <DocumentationFile></DocumentationFile>
-    <ExternalConsole>false</ExternalConsole>
-    <SignAssembly></SignAssembly>
-  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="AngleSharp.Css" Version="0.14.0" />
