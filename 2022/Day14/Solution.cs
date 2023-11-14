@@ -10,19 +10,18 @@ namespace AdventOfCode.Y2022.Day14;
 
 [ProblemName("Regolith Reservoir")]      
 class Solution : Solver {
-    List<Point[]> paths = new();
     Dictionary<Point, Char> rocks;
     int edgeY;
-    bool floor = false;
+    bool floor;
 
     public object PartOne(string input) {
+        floor = false;
         ReadInput(input);
         return FillSandSteps();
     }
 
     public object PartTwo(string input) {
         floor = true;
-        ReadInput(input);
         return FillSandSteps();
     }
 
@@ -30,30 +29,19 @@ class Solution : Solver {
     {
         //sand source.
         var src = new Point(500, 0);
-        bool abyss = false;
-        while (!abyss)
+        bool abyssFloor = false;
+        while (!abyssFloor)
         {
             (Point sand, bool rest) sandPos = (src, false);
             while (sandPos.rest != true)
             {
                 sandPos = Move(sandPos.sand);
-                if (rocks.ContainsKey(sandPos.sand))
-                {
-                    abyss = true;
-                    break;
-                }
-                if (sandPos.rest == true)
-                {
-                    rocks.Add(sandPos.sand, 'o');
-                }
-                if (!floor && sandPos.sand.Y > edgeY)
-                {
-                    abyss = true;
-                    break;
-                }
+                if (rocks.ContainsKey(sandPos.sand)) { abyssFloor = true; break; }
+                if (sandPos.rest == true) rocks.Add(sandPos.sand, 'o');
+                if (!floor && sandPos.sand.Y > edgeY) { abyssFloor = true; break; }
             }
         }
-        return rocks.Select(y => y.Value).Where(v => v == 'o').Count();
+        return rocks.Select(y => y.Value).Count(v => v == 'o');
     }
 
     private (Point,bool) Move(Point p)
@@ -83,7 +71,7 @@ class Solution : Solver {
     private void AddRocks(Point start, Point end)
     {
         Size diff = new Size(Math.Sign(end.X - start.X), Math.Sign(end.Y - start.Y));
-        for (var item = start; item != end+diff; item= Point.Add(item,diff))
+        for (var item = start; item != end+diff; item= item+diff)
         {
             rocks[item] = '#';
         }
@@ -92,7 +80,7 @@ class Solution : Solver {
     private void ReadInput(string input)
     {
         rocks = new();
-        paths = input.Split('\n')
+        input.Split('\n')
             .Select(x => x.Split(" -> "))
             .Select(l =>
                 l.Select(p =>
@@ -101,8 +89,8 @@ class Solution : Solver {
                     return new Point(int.Parse(arr[0]), int.Parse(arr[1]));
                 })
                 .ToArray())
-            .ToList();
-        paths.ForEach(x => MapRocks(x));
+            .ToList()
+            .ForEach(x => MapRocks(x));
 
         edgeY = rocks.Select(x => x.Key).Select(p => p.Y).Max();
     }
