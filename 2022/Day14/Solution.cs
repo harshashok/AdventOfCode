@@ -11,8 +11,9 @@ namespace AdventOfCode.Y2022.Day14;
 [ProblemName("Regolith Reservoir")]      
 class Solution : Solver {
     List<Point[]> paths = new();
-    Dictionary<Point, Char> rocks = new();
-    int edgeX, edgeY;
+    Dictionary<Point, Char> rocks;
+    int edgeY;
+    bool floor = false;
 
     public object PartOne(string input) {
         ReadInput(input);
@@ -20,35 +21,39 @@ class Solution : Solver {
     }
 
     public object PartTwo(string input) {
-        return 0;
+        floor = true;
+        ReadInput(input);
+        return FillSandSteps();
     }
 
     private int FillSandSteps()
     {
         //sand source.
         var src = new Point(500, 0);
-        int sandCount = 0;
         bool abyss = false;
-
         while (!abyss)
         {
             (Point sand, bool rest) sandPos = (src, false);
             while (sandPos.rest != true)
             {
                 sandPos = Move(sandPos.sand);
+                if (rocks.ContainsKey(sandPos.sand))
+                {
+                    abyss = true;
+                    break;
+                }
                 if (sandPos.rest == true)
                 {
                     rocks.Add(sandPos.sand, 'o');
-                    sandCount++;
                 }
-                if (sandPos.sand.Y >= edgeY)
+                if (!floor && sandPos.sand.Y > edgeY)
                 {
                     abyss = true;
                     break;
                 }
             }
         }
-        return sandCount;
+        return rocks.Select(y => y.Value).Where(v => v == 'o').Count();
     }
 
     private (Point,bool) Move(Point p)
@@ -57,9 +62,13 @@ class Solution : Solver {
         var dleft = new Size(-1, 1);
         var dright = new Size(1, 1);
 
+        /*part2*/
+        if (floor && (p.Y == edgeY + 1)) return (p, true);
+
         if (!rocks.ContainsKey(p + down)) return ((p + down), false);
         if (!rocks.ContainsKey(p + dleft)) return ((p + dleft), false);
         if (!rocks.ContainsKey(p + dright)) return ((p + dright), false);
+
         return (p, true);
 
     }
@@ -82,6 +91,7 @@ class Solution : Solver {
 
     private void ReadInput(string input)
     {
+        rocks = new();
         paths = input.Split('\n')
             .Select(x => x.Split(" -> "))
             .Select(l =>
@@ -94,7 +104,6 @@ class Solution : Solver {
             .ToList();
         paths.ForEach(x => MapRocks(x));
 
-        edgeX = rocks.Select(x => x.Key).Select(p => p.X).Max();
         edgeY = rocks.Select(x => x.Key).Select(p => p.Y).Max();
     }
 }
