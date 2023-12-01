@@ -19,7 +19,7 @@ class Solution : Solver {
     {
         ReadInput(input);
         int row = 2000000;
-        sensorBeacon.ToList().ForEach(pair => FillSensorField(pair.Key, pair.Value, row));  //2000000 - part1
+        sensorBeacon.ToList().ForEach(pair => FillSensorField(pair.Key, pair.Value, row));
         return fields.Count;
     }
 
