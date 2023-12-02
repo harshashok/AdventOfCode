@@ -16,12 +16,41 @@ class Solution : Solver {
             .Select(line => regex.Matches(line))
             .Select(m => m.Select(m => m.Value))
             .Select(p => Array.ConvertAll(p.ToArray(), int.Parse))
-            .ToList()
             .Select(p => (p[0] * 10) + p[^1])
             .Sum();
+        //return 0;
     }
 
     public object PartTwo(string input) {
-        return 0;
+        Regex regex = new("(?=([0-9]|one|two|three|four|five|six|seven|eight|nine|zero))");
+        var ss = input.Split('\n');
+        var tt = ss.Select(line => regex.Matches(line)).ToList();
+        var uu = tt.Select(m => m.SelectMany(m => m.Groups.Cast<Group>().Skip(1).Select(g => g.Value)));
+        var vv = uu.Select(p => Convert(p.ToArray()));
+        //.Sum();
+        return vv.Sum();
+        //return 0;
     }
+
+    int Convert(string[] p)
+    {
+        var first = numMap.TryGetValue(p[0], out int value) ? value : int.Parse(p[0]);
+        var second = numMap.TryGetValue(p[^1], out int value2) ? value2 : int.Parse(p[^1]);
+
+        return (first * 10) + second;
+    }
+
+    Dictionary<string, int> numMap = new()
+    {
+        {"one", 1 },
+        {"two", 2 },
+        {"three", 3 },
+        {"four", 4 },
+        {"five", 5 },
+        {"six", 6 },
+        {"seven", 7 },
+        {"eight", 8 },
+        {"nine", 9 },
+        {"zero", 0 }
+    };
 }
