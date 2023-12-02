@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Drawing;
 
 namespace AdventOfCode.Y2022.Day16;
 
