@@ -21,7 +21,17 @@ class Solution : Solver {
     }
 
     public object PartTwo(string input) {
-        return 0;
+        return games.Select(game =>
+        {
+            int red = 0, green = 0, blue = 0;
+            game.sets.ForEach(g => {
+                red = Math.Max(red, g.red);
+                green = Math.Max(green, g.green);
+                blue = Math.Max(blue, g.blue);
+            });
+            return red * green * blue;
+        })
+        .Sum();
     }
 
     void ReadInput(string input)
@@ -37,22 +47,22 @@ class Solution : Solver {
         game.ID = int.Parse(Regex.Match(idValues[0], @"\d+").Value);
 
         idValues[1].Split(';')
-                .Select(set => set.Split(','))
-                .ToList()
-                .ForEach(cubes =>
+            .Select(set => set.Split(','))
+            .ToList()
+            .ForEach(cubes =>
+            {
+                Dictionary<string, int> cubeMap = new();
+                foreach (var cube in cubes)
                 {
-                    Dictionary<string, int> cubeMap = new();
-                    foreach (var cube in cubes)
-                    {
-                        var value = cube.Trim().Split();
-                        cubeMap.Add(value[1], int.Parse(value[0]));
-                    }
-                    game.sets.Add(new Cubes(
-                            cubeMap.TryGetValue("red", out int red) ? red : 0,
-                            cubeMap.TryGetValue("green", out int green) ? green : 0,
-                            cubeMap.TryGetValue("blue", out int blue) ? blue : 0
-                        ));
-                });
+                    var value = cube.Trim().Split();
+                    cubeMap.Add(value[1], int.Parse(value[0]));
+                }
+                game.sets.Add(new Cubes(
+                        cubeMap.TryGetValue("red", out int red) ? red : 0,
+                        cubeMap.TryGetValue("green", out int green) ? green : 0,
+                        cubeMap.TryGetValue("blue", out int blue) ? blue : 0
+                    ));
+            });
         games.Add(game);
     }
 
