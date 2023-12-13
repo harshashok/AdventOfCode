@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2023.Day03;
 
 [ProblemName("Gear Ratios")]      
 class Solution : Solver {
-    Dictionary<Point, string> map = new();
+    Dictionary<Point, string> Map = new();
     List<Number> numMap = new();
     record Number (string value, Point point);
     Regex number_regex = new(@"\d+");
@@ -18,21 +18,84 @@ class Solution : Solver {
 
     public object PartOne(string input) {
         ReadInput(input);
-        var ret = numMap.Select(num => IsPartNumber(num) ? int.Parse(num.value) : 0);
-        return ret.Sum();
-        //return IsPartNumber("617");
-
+        return numMap.Select(num => IsPartNumber(num) ? int.Parse(num.value) : 0).Sum();
     }
 
-    public object PartTwo(string input) {
-        return 0;
+    public object PartTwo(string input)
+    {
+        var gears = Map.Where(x => x.Value == "*");
+        var gRatio = gears.Select(x => GearRatio(x.Key)).ToList();
+
+        return (
+            from g in gears
+            let neighbours = from n in numMap where AltGearRatio(n, g.Key) select int.Parse(n.value)
+            where neighbours.Count() == 2
+            select neighbours.First() * neighbours.Last()
+        ).Sum();
     }
+
+    /**
+     *
+     *     bool Adjacent(Part p1, Part p2) =>
+            Math.Abs(gear.X - p1.X) <= 1 &&
+            p1.Y <= gear.Y + gear.Text.Length &&
+            gear.Y <= p1.Y + p1.Text.Length;
+     */
+
+    /*
+     *  .....
+     *  .234.
+     *  ....*
+     */
+    bool AltGearRatio(Number num, Point gear)
+    {
+        return Math.Abs(gear.X - num.point.X) <= 1 &&
+            num.point.Y <= gear.Y + 1 &&
+            gear.Y <= num.point.Y + num.value.Length;
+    }
+    
+    int GearRatio(Point point)
+    {
+        var local = GridOffset.Select(size =>
+            {
+                //return IsPartNumber(point+size) ? int.Parse(Map[point + size]) : -1;
+                return Map.TryGetValue(point + size, out string val) && (int.TryParse(val, out int intValue))
+                    ? intValue
+                    : -1;
+            })
+            .Where(x => x >= 0)
+            .ToList();
+        
+        var result = 0;
+        if (local.Count == 2)
+        {
+            result = local.First() * local.Last();
+        } 
+        
+        return result;
+    }
+
+    private List<Size> GridOffset = new()
+    {
+        new Size(-1, -1),
+        new Size(-1, 0),
+        new Size(-1, 1),
+        new Size(0, -1),
+        new Size(0, 1),
+        new Size(1, -1),
+        new Size(1, 0),
+        new Size(1, 1)
+    };
 
     /**
      *    .....
      *    .234.
      *    .....
      */
+    bool IsPartNumber(Point point)
+    {
+        return !IsSymbol(point) && (Map.TryGetValue(point, out string value)) && IsPartNumber(new Number(value, point));
+    }
     bool IsPartNumber(Number part)
     {
         int numLength = part.value.Length;
@@ -55,12 +118,8 @@ class Solution : Solver {
         return false;
     }
 
-    bool IsSymbol(Point p)
-    {
-        return map.TryGetValue(p, out string val) ?
-               (int.TryParse(val, out _) ? false : true) :
-               false;
-    }
+    bool IsSymbol(Point p) => Map.TryGetValue(p, out string val) && (!int.TryParse(val, out _));
+
     void ReadInput(string input)
     {
         int index = 0;
@@ -81,10 +140,10 @@ class Solution : Solver {
                 numMap.Add(new Number(m.Value, startpoint));
                 for (var start = startpoint; start != endPoint; start+=new Size(0, 1))
                 {
-                    map.Add(start, m.Value);
+                    Map.Add(start, m.Value);
                 }
             });
 
-        symbol_result.ToList().ForEach(m => map.Add(new Point(lineNumber, m.Index), m.Value));
+        symbol_result.ToList().ForEach(m => Map.Add(new Point(lineNumber, m.Index), m.Value));
     }
 }
