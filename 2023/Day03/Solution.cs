@@ -13,89 +13,37 @@ class Solution : Solver {
     Dictionary<Point, string> Map = new();
     List<Number> numMap = new();
     record Number (string value, Point point);
-    Regex number_regex = new(@"\d+");
-    Regex symbol_regex = new(@"[^.\d]");
+    Regex numberRegex = new(@"\d+");
+    Regex symbolRegex = new(@"[^.\d]");
 
     public object PartOne(string input) {
         ReadInput(input);
-        return numMap.Select(num => IsPartNumber(num) ? int.Parse(num.value) : 0).Sum();
+        return numMap.Where(IsPartNumber).Sum(num => int.Parse(num.value));
     }
 
     public object PartTwo(string input)
     {
         var gears = Map.Where(x => x.Value == "*");
-        var gRatio = gears.Select(x => GearRatio(x.Key)).ToList();
-
         return (
             from g in gears
-            let neighbours = from n in numMap where AltGearRatio(n, g.Key) select int.Parse(n.value)
+            let neighbours = from num in numMap where GearRatio(num, g.Key) select int.Parse(num.value)
             where neighbours.Count() == 2
             select neighbours.First() * neighbours.Last()
         ).Sum();
     }
-
-    /**
-     *
-     *     bool Adjacent(Part p1, Part p2) =>
-            Math.Abs(gear.X - p1.X) <= 1 &&
-            p1.Y <= gear.Y + gear.Text.Length &&
-            gear.Y <= p1.Y + p1.Text.Length;
-     */
-
+    
     /*
      *  .....
      *  .234.
      *  ....*
      */
-    bool AltGearRatio(Number num, Point gear)
+    bool GearRatio(Number num, Point gear)
     {
         return Math.Abs(gear.X - num.point.X) <= 1 &&
             num.point.Y <= gear.Y + 1 &&
             gear.Y <= num.point.Y + num.value.Length;
     }
     
-    int GearRatio(Point point)
-    {
-        var local = GridOffset.Select(size =>
-            {
-                //return IsPartNumber(point+size) ? int.Parse(Map[point + size]) : -1;
-                return Map.TryGetValue(point + size, out string val) && (int.TryParse(val, out int intValue))
-                    ? intValue
-                    : -1;
-            })
-            .Where(x => x >= 0)
-            .ToList();
-        
-        var result = 0;
-        if (local.Count == 2)
-        {
-            result = local.First() * local.Last();
-        } 
-        
-        return result;
-    }
-
-    private List<Size> GridOffset = new()
-    {
-        new Size(-1, -1),
-        new Size(-1, 0),
-        new Size(-1, 1),
-        new Size(0, -1),
-        new Size(0, 1),
-        new Size(1, -1),
-        new Size(1, 0),
-        new Size(1, 1)
-    };
-
-    /**
-     *    .....
-     *    .234.
-     *    .....
-     */
-    bool IsPartNumber(Point point)
-    {
-        return !IsSymbol(point) && (Map.TryGetValue(point, out string value)) && IsPartNumber(new Number(value, point));
-    }
     bool IsPartNumber(Number part)
     {
         int numLength = part.value.Length;
@@ -129,21 +77,19 @@ class Solution : Solver {
 
     void ParseLine(string line, int lineNumber)
     {
-        var number_result = number_regex.Matches(line);
-        var symbol_result = symbol_regex.Matches(line);
-
-        number_result.ToList()
-            .ForEach(m =>
-            {
-                Point startpoint = new Point(lineNumber, m.Index);
-                Point endPoint = startpoint + new Size(0, m.Length);
-                numMap.Add(new Number(m.Value, startpoint));
-                for (var start = startpoint; start != endPoint; start+=new Size(0, 1))
+        numberRegex.Matches(line)
+                .ToList()
+                .ForEach(m =>
                 {
-                    Map.Add(start, m.Value);
-                }
-            });
-
-        symbol_result.ToList().ForEach(m => Map.Add(new Point(lineNumber, m.Index), m.Value));
+                    Point startpoint = new Point(lineNumber, m.Index);
+                    Point endPoint = startpoint + new Size(0, m.Length);
+                    numMap.Add(new Number(m.Value, startpoint));
+                    for (var start = startpoint; start != endPoint; start+=new Size(0, 1))
+                    {
+                        Map.Add(start, m.Value);
+                    }
+                });
+        
+        symbolRegex.Matches(line).ToList().ForEach(m => Map.Add(new Point(lineNumber, m.Index), m.Value));
     }
 }
