@@ -11,18 +11,18 @@ namespace AdventOfCode.Y2023.Day04;
 [ProblemName("Scratchcards")]      
 class Solution : Solver
 {
-    private List<Card> cards = new();
+    List<Card> cards = new();
     public object PartOne(string input)
     {
         ReadInput(input);
-        return cards.Select(card => card.winNumbers.Intersect(card.givenNumbers).Count())
+        return cards.Select(card => card.matches)
             .Select(matches => matches > 0 ? Math.Pow(2, matches-1) : 0)
             .Sum();
     }
 
     public object PartTwo(string input)
     {
-        var cardMatches = cards.Select(card => card.winNumbers.Intersect(card.givenNumbers).Count()).ToArray();
+        var cardMatches = cards.Select(card => card.matches).ToArray();
         int[] counts = new int[cardMatches.Length];
         Array.Fill(counts, 1);
 
@@ -59,5 +59,6 @@ class Solution : Solver
         public int cardNumber;
         public HashSet<string> winNumbers;
         public HashSet<string> givenNumbers;
+        public int matches => winNumbers.Intersect(givenNumbers).Count();
     }
 }
