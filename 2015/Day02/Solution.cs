@@ -15,14 +15,10 @@ class Solution : Solver
     {
         ReadInput(input);
         return presents.Select(p =>
-                    (2 * p.length * p.width) + (2 * p.width * p.height) + (2 * p.height * p.length) + p.length * p.width)
-                .Sum();
+            (2 * p.length * p.width) + (2 * p.width * p.height) + (2 * p.height * p.length) + p.length * p.width).Sum();
     }
 
-    public object PartTwo(string input)
-    {
-        return presents.Select(p => ((2 * p.length) + (2 * p.width)) + (p.length * p.width * p.height)).Sum();
-    }
+    public object PartTwo(string input) => presents.Select(p => ((2 * p.length) + (2 * p.width)) + (p.length * p.width * p.height)).Sum();
 
     void ReadInput(string input) =>
         presents = input.Split('\n')
