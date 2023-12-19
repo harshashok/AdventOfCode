@@ -10,15 +10,9 @@ namespace AdventOfCode.Y2015.Day01;
 [ProblemName("Not Quite Lisp")]      
 class Solution : Solver {
 
-    public object PartOne(string input)
-    {
-        return input.Aggregate(0, (accum, y) => accum + (y == '('? 1 : -1));
-    }
+    public object PartOne(string input) => input.Aggregate(0, (accum, y) => accum + (y == '('? 1 : -1));
 
-    public object PartTwo(string input)
-    {
-        return GetFloor(input).First(x => x.floor == -1).index;
-    }
+    public object PartTwo(string input) => GetFloor(input).First(x => x.floor == -1).index;
 
     IEnumerable<(int floor, int index)> GetFloor(string input)
     {
