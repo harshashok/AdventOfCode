@@ -58,4 +58,6 @@ class Solution : Solver
     }
     
     record Map(long destStart, long srcStart, long length);
+
+    record Range(long start, long end, long offset);
 }
