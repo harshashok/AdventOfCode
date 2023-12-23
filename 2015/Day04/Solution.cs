@@ -40,28 +40,7 @@ class Solution : Solver {
         );
         return bag.Min();
     }
-    int CreateMD5(string input)
-    {
-        int iter = 0;
-        using (MD5 md5 = MD5.Create())
-        {
-            while (true)
-            {
-                var seed = input + iter.ToString();
-                var inputBytes = ASCIIEncoding.ASCII.GetBytes(seed);
-                var outputHash = md5.ComputeHash(inputBytes);
-                var result = Convert.ToHexString(outputHash);
-
-                if (result.StartsWith("00000"))
-                {
-                    return iter;
-                }
-
-                iter++;
-            }
-        }
-    }
-
+    
     IEnumerable<int> Numbers()
     {
         for (int i = 0;;i++)
