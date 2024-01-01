@@ -28,14 +28,7 @@ class Solution : Solver
         cache = new();
         return Compute("a");
     }
-
-    /**
-     *  InExpr -> outExpr
-     *       x -> 123
-     *       d -> x AND y
-     *       f -> x LSHIFT 2
-     */
-
+    
     ushort Compute(string expr)
     {
         if (ushort.TryParse(expr, out var resultInt))
