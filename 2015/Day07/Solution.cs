@@ -11,15 +11,22 @@ namespace AdventOfCode.Y2015.Day07;
 class Solution : Solver
 {
     private Dictionary<string, string> WireMap = new();
-    private Dictionary<string, int> cache = new();
+    private Dictionary<string, string> InverseWireMap = new();
+    private Dictionary<string, ushort> cache = new();
     public object PartOne(string input) {
         ReadInput(input);
-        var result = Compute("f");
-        return result;
+        return Compute("a");
     }
 
-    public object PartTwo(string input) {
-        return 0;
+    public object PartTwo(string input)
+    {
+        var b = Compute("a");
+        InverseWireMap.Remove(WireMap["b"]);
+        WireMap.Remove("b");
+        WireMap.Add("b", b.ToString());
+        InverseWireMap.Add(b.ToString(), "b");
+        cache = new();
+        return Compute("a");
     }
 
     /**
@@ -28,16 +35,17 @@ class Solution : Solver
      *       d -> x AND y
      *       f -> x LSHIFT 2
      */
-    void ComputeExpr(string inExpr, string outExpr)
-    {
-        
-    }
 
     ushort Compute(string expr)
     {
         if (ushort.TryParse(expr, out var resultInt))
         {
             return resultInt;
+        }
+
+        if (cache.ContainsKey(expr))
+        {
+            return cache[expr];
         }
         
         if (WireMap.TryGetValue(expr, out string resultStr))
@@ -50,6 +58,8 @@ class Solution : Solver
         {
             var matchArr = notOpMatches.Groups.Cast<Group>().Skip(1).First();
             var retVal = unchecked((ushort) ~Compute(matchArr.Value));
+            var key = InverseWireMap[expr];
+            cache.Add(key, retVal);
             return retVal;
         }
 
@@ -58,6 +68,8 @@ class Solution : Solver
         {
             var matchArr = lshiftOpMatches.Groups.Cast<Group>().Skip(1).ToArray();
             var retVal = unchecked((ushort)(Compute(matchArr[0].Value) << int.Parse(matchArr[1].Value)));
+            var key = InverseWireMap[expr];
+            cache.Add(key, retVal);
             return retVal;
         }
         
@@ -66,6 +78,8 @@ class Solution : Solver
         {
             var matchArr = rshiftOpMatches.Groups.Cast<Group>().Skip(1).ToArray();
             var retVal = unchecked((ushort)(Compute(matchArr[0].Value) >> int.Parse(matchArr[1].Value)));
+            var key = InverseWireMap[expr];
+            cache.Add(key, retVal);
             return retVal;
         }
         
@@ -74,6 +88,8 @@ class Solution : Solver
         {
             var matchArr = andOpMatches.Groups.Cast<Group>().Skip(1).ToArray();
             var retVal = unchecked((ushort)(Compute(matchArr[0].Value) & Compute(matchArr[1].Value)));
+            var key = InverseWireMap[expr];
+            cache.Add(key, retVal);
             return retVal;
         }
         
@@ -82,6 +98,8 @@ class Solution : Solver
         {
             var matchArr = orOpMatches.Groups.Cast<Group>().Skip(1).ToArray();
             var retVal = unchecked((ushort)(Compute(matchArr[0].Value) | Compute(matchArr[1].Value)));
+            var key = InverseWireMap[expr];
+            cache.Add(key, retVal);
             return retVal;
         }
         
@@ -93,6 +111,10 @@ class Solution : Solver
         input.Split('\n')
             .Select(line => line.Split(" -> "))
             .ToList()
-            .ForEach(values => WireMap.Add(values[1], values[0]));
+            .ForEach(values =>
+            {
+                WireMap.Add(values[1], values[0]);
+                InverseWireMap.Add(values[0], values[1]);
+            });
     }
 }
