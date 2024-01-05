@@ -19,6 +19,7 @@ class Solution : Solver {
     {
         if (json.ValueKind is JsonValueKind.Number) return json.GetInt32();
         if (json.ValueKind is JsonValueKind.Array) return json.EnumerateArray().Select(ParseJson).Sum();
+        
         if (json.ValueKind is JsonValueKind.Object)
         {
             if (json.EnumerateObject().Any(x => x.Value.ToString() == "red")) return 0;
