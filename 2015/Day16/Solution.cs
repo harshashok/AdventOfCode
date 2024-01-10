@@ -11,6 +11,7 @@ namespace AdventOfCode.Y2015.Day16;
 class Solution : Solver
 {
     private List<Sue> AuntSues = new();
+    record Sue(int number, Dictionary<string, int> map);
     private Dictionary<string, int> ticker = new()
     {
         {"children", 3},
@@ -65,6 +66,4 @@ class Solution : Solver
                 AuntSues.Add(new Sue(sueNumber, sueMap));
             });
     }
-
-    record Sue(int number, Dictionary<string, int> map);
 }
