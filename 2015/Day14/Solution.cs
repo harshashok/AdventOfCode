@@ -45,7 +45,7 @@ class Solution : Solver
     }   
     /**
      *  The first part is the distance traveled during one cycle times the number of full cycles that a reindeer will fly and then rest.
-     * v*g is the distance traveled in one cycle and t/(g + r) is the total number of completed cycles (python rounds down all division of integers,
+     * v*g is the distance traveled in one cycle and t/(g + r) is the total number of completed cycles (int rounds down all division of integers,
      * it should really be floor(t/(g+r)).
      * So that takes care of all of the full cycles. Now what about the remainder if t isn't divisible by g+r?
      * t % (g + r) is the remaining time after all of the full cycles are completed. Since the remaining time could be greater than g,
