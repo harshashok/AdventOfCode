@@ -23,12 +23,8 @@ class Solution : Solver {
             int skipCount = 0;
             for (int house = elf; house <= houses;)
             {
-                if (house % elf == 0)
-                {
-                    presents[house] += elf * multiplier;
-                    skipCount++;
-                }
-
+                presents[house] += elf * multiplier;
+                skipCount++;
                 if (skip && skipCount >= 50) break;
                 house += elf;
             }
