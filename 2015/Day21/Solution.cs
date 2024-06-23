@@ -16,7 +16,8 @@ class Solution : Solver
     private IEnumerable<IEnumerable<Item>> ringCombinations;
     private CharStats Player;
     private CharStats Boss;
-
+    HashSet<int> winningCost = new();
+    HashSet<int> losingCost = new();
 
     record Item(string name, int cost, int damage, int armor);
 
@@ -25,18 +26,17 @@ class Solution : Solver
     public object PartOne(string input)
     {
         ReadInput(input);
-        return LeastCostStats();
+        LeastCostStats();
+        return winningCost.Min();
     }
 
     public object PartTwo(string input)
     {
-        return 0;
+        return losingCost.Max();
     }
 
-    private int LeastCostStats()
+    private void LeastCostStats()
     {
-        HashSet<int> winningCost = new();
-        Dictionary<CharStats, int> debugCost = new();
         foreach (var weapon in _weaponStats)
         {
             foreach (var armor in _armorStats)
@@ -51,11 +51,13 @@ class Solution : Solver
                     {
                         winningCost.Add(weapon.cost + armor.cost + ringCombo.Sum(x => x.cost));
                     }
+                    else
+                    {
+                        losingCost.Add(weapon.cost + armor.cost + ringCombo.Sum(x => x.cost));
+                    }
                 }
             }
         }
-
-        return winningCost.Min();
     }
 
 private bool PlayGame(CharStats player, CharStats boss)
