@@ -12,9 +12,7 @@ class Solution : Solver
 {
     public object PartOne(string input) => ReadInput(input).Count(IsReportSafe);
 
-    public object PartTwo(string input) {
-        return ReadInput(input).Count(IsReportSafeV2);
-    }
+    public object PartTwo(string input) => ReadInput(input).Count(line => GenerateSequences(line).Any(IsReportSafe));
 
     private bool IsReportSafe(int[] arr)
     {
@@ -28,25 +26,19 @@ class Solution : Solver
             else return false;
         }
 
-        if ((increasing == arr.Length - 1 && decreasing == 0) || 
-            (decreasing == arr.Length - 1 && increasing == 0))
-            return true;
+        if (increasing == arr.Length - 1 || decreasing == arr.Length - 1) return true;
         
         return false;
     }
     
-    private bool IsReportSafeV2(int[] arr)
-    {
-        var lists = Enumerable.Range(0, arr.Length + 1)
+    private IEnumerable<int[]> GenerateSequences(int[] arr) =>
+        Enumerable.Range(0, arr.Length + 1)
             .Select(i =>
             {
                 var first = arr.Take(i - 1);
                 var second = arr.Skip(i);
                 return Enumerable.Concat(first, second).ToArray();
             });
-
-        return lists.Any(IsReportSafe);
-    }
 
     private IEnumerable<int[]> ReadInput(string input) => input.Split('\n').Select(line => line.Split(' ').Select(int.Parse).ToArray());
 }
