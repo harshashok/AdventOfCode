@@ -37,11 +37,10 @@ class Solution : Solver
                    (useConcat && IsValidCalibration(Concatenate(sum, nums[index]), index + 1, true));
         }
         
-        private long Concatenate(long first, long second) => long.Parse(first.ToString() + second.ToString());
+        private static long Concatenate(long first, long second) => long.Parse(first.ToString() + second.ToString());
     }
 
-    private void ReadInput(string input)
-    {
+    private void ReadInput(string input) =>
         calibrations = input.Split('\n')
             .Select(line => line.Split(':'))
             .Select(r =>
@@ -50,5 +49,4 @@ class Solution : Solver
                 long[] nums = Array.ConvertAll(r[1].Split(' ', StringSplitOptions.RemoveEmptyEntries), long.Parse);
                 return new Calibration(nums, total);
             });
-    }
 }
