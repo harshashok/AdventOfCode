@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>13</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Configurations>Debug_Session;Debug;Release</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Session|AnyCPU' ">
     <IntermediateOutputPath>obj\Debug_Session</IntermediateOutputPath>
-    <DebugType></DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_Session</OutputPath>
     <DefineConstants></DefineConstants>
