@@ -29,8 +29,6 @@ class Solution : Solver {
     public object PartTwo(string input)
     {
         dialSetting = 50;
-        var rots = Parse2(input);
-        
         return rotations.Select(PerformRotationAndCrossing).Sum();
     }
     
@@ -63,11 +61,5 @@ class Solution : Solver {
         zeroCrossing += (dialSetting == 0) ? 1 : 0;
         return zeroCrossing;
     }
-    
-    IEnumerable<int> Parse2(string input) =>
-        from line in input.Split("\n")
-        let d = line[0] == 'R' ? 1 : -1
-        let a = int.Parse(line.Substring(1))
-        from i in Enumerable.Range(0, a)
-        select d;
+
 }
