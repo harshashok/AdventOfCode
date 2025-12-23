@@ -22,53 +22,52 @@ class Solution : Solver {
                 return (dir == "L" ? -1 : 1) * value;
             });
 
+        
         return rotations.Count(PerformRotation);
     }
     
     public object PartTwo(string input)
     {
         dialSetting = 50;
+        var rots = Parse2(input);
         
         return rotations.Select(PerformRotationAndCrossing).Sum();
     }
     
     private bool PerformRotation(int value)
     {
-        dialSetting += value % 100;
+        // dialSetting += value % 100;
+        //
+        // if (dialSetting < 0) dialSetting += 100;
+        // if (dialSetting >= 100) dialSetting -= 100;
+        //
+        // return dialSetting == 0;
 
-        if (dialSetting < 0) dialSetting += 100;
-        if (dialSetting >= 100) dialSetting -= 100;
-        
-        //Console.WriteLine($"The dial is rotated {value} to point at {dialSetting}");
-        return dialSetting == 0;
+        dialSetting = (dialSetting + value) % 100;
+        return (dialSetting == 0);
     }
 
     private int PerformRotationAndCrossing(int value)
     {
         bool skipCount = dialSetting == 0;
         int zeroCrossing = Math.Abs(value) / 100;
-        
-        int remainingTurns = value % 100;
-        dialSetting += remainingTurns;
-        
-        if (dialSetting < 0)
+        dialSetting +=  value % 100;
+
+        if (dialSetting is < 0 or > 100)
         {
-            dialSetting += 100;
+            dialSetting = (dialSetting < 0) ? (dialSetting += 100) : (dialSetting % 100);
             if (!skipCount) zeroCrossing++;
         }
 
-        if (dialSetting > 100)
-        {
-            dialSetting -= 100;
-            if (!skipCount) zeroCrossing++;
-        }
-
-        dialSetting = (dialSetting == 100) ? 0 : dialSetting;
+        dialSetting %= 100;
         zeroCrossing += (dialSetting == 0) ? 1 : 0;
-
-        //Console.WriteLine($"The dial is rotated {value} to point at {dialSetting} | zeroCrossing : {zeroCrossing}");
-        
-        int total = zeroCrossing;
-        return total;
+        return zeroCrossing;
     }
+    
+    IEnumerable<int> Parse2(string input) =>
+        from line in input.Split("\n")
+        let d = line[0] == 'R' ? 1 : -1
+        let a = int.Parse(line.Substring(1))
+        from i in Enumerable.Range(0, a)
+        select d;
 }
