@@ -1,0 +1,67 @@
+
+using System;
+
+namespace AdventOfCode.Y2025;
+
+class SplashScreenImpl : SplashScreen {
+
+    public void Show() {
+
+        var color = Console.ForegroundColor;
+        Write(0xcc00, false, "           ▄█▄ ▄▄█ ▄ ▄ ▄▄▄ ▄▄ ▄█▄  ▄▄▄ ▄█  ▄▄ ▄▄▄ ▄▄█ ▄▄▄\n           █▄█ █ █ █ █ █▄█ █ █ █   █ █ █▄ ");
+            Write(0xcc00, false, " █  █ █ █ █ █▄█\n           █ █ █▄█ ▀▄▀ █▄▄ █ █ █▄  █▄█ █   █▄ █▄█ █▄█ █▄▄  /^2025$/\n            \n   ");
+            Write(0xcc00, false, "          ");
+            Write(0xffffff, false, "... .  ____      '..  ");
+            Write(0xffff66, true, "* ");
+            Write(0xffffff, false, "'     '   ' .  ");
+            Write(0xff9900, false, "<");
+            Write(0xffffff, false, "o    '.       \n           ________/");
+            Write(0x999999, false, "O___");
+            Write(0xffffff, false, "\\__________");
+            Write(0xff0000, false, "|");
+            Write(0xffffff, false, "_________________O______  ");
+            Write(0xcccccc, false, " 1 ");
+            Write(0xffff66, false, "**\n           ");
+            Write(0x666666, false, "   _______||_________                                   \n              | _@__ || _o_    |_ _________");
+            Write(0x666666, false, "________________   ");
+            Write(0xcccccc, false, " 2 ");
+            Write(0x666666, false, "**\n              |_&_%__||_oo__^=_[ \\|     _    .. .. ..     |        \n                             ");
+            Write(0x666666, false, "   \\_]__--|_|___[]_[]_[]__//_|   ");
+            Write(0xcccccc, false, " 3 ");
+            Write(0x666666, false, "**\n                                          ____________//___        \n           __________________");
+            Write(0x666666, false, "________     | \\        // @@|   ");
+            Write(0xcccccc, false, " 4 ");
+            Write(0x666666, false, "**\n           |_  ___ | .--.           |     |_[#]_@@__//_@@@|        \n           |_\\_|^|_]_|==|_T_T");
+            Write(0x666666, false, "_T_T_T_|                         ");
+            Write(0xcccccc, false, " 5 ");
+            Write(0x666666, false, "**\n            ||   ____________    _______________________           \n           _||__/            ");
+            Write(0x666666, false, "\\_  |      |~             |      ");
+            Write(0xcccccc, false, " 6 ");
+            Write(0x666666, false, "**\n           |   |   1  2  3    |  |     / \\             |____       \n           |___]__[]_[]_[]__<");
+            Write(0x666666, false, ">|  |    |H_/|\\   \\\\\\\\\\\\  | | |  ");
+            Write(0xcccccc, false, " 7 ");
+            Write(0x666666, false, "**\n                                 |<>__|H__|_\\__|_____|_[_O_|       \n            _________________");
+            Write(0x666666, false, "_________                   |    ");
+            Write(0xcccccc, false, " 8 ");
+            Write(0x666666, false, "**\n           /      ______         __  |  _________________O__       \n           [     |(__) [     ");
+            Write(0x666666, false, "    ] \\ |__|  [  ]          | |  ");
+            Write(0xcccccc, false, " 9 ");
+            Write(0x666666, false, "**\n           o=====|_____o=========o_|_[__]_____-/_-/_-/___|_|       \n           _________||______ ");
+            Write(0x666666, false, "______________________________   ");
+            Write(0xcccccc, false, "10 ");
+            Write(0x666666, false, "**\n           |  ___          | |                            |        \n           |_|   |_(:::::)_| ");
+            Write(0x666666, false, "|   ^      ^      ^      ^   |   ");
+            Write(0xcccccc, false, "11 ");
+            Write(0x666666, false, "**\n               |      .--.   |  <^>    <^>    <^>    <^>  |        \n               '------'  '---");
+            Write(0x666666, false, "#_<<^>>__<<^>>__<<^>>__<<^>>_|   ");
+            Write(0xcccccc, false, "12 ");
+            Write(0x666666, false, "**\n           \n");
+            
+        Console.ForegroundColor = color;
+        Console.WriteLine();
+    }
+
+   private static void Write(int rgb, bool bold, string text){
+       Console.Write($"\u001b[38;2;{(rgb>>16)&255};{(rgb>>8)&255};{rgb&255}{(bold ? ";1" : "")}m{text}");
+   }
+}
